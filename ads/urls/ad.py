@@ -1,8 +1,8 @@
 from django.urls import path
 
-from ads.views import AdListCreateView, AdDetailView
+from ads import views
 
 urlpatterns = [
-    path('', AdListCreateView.as_view()),
-    path('<int:pk>', AdDetailView.as_view(), name='ad_detail')
+    path('', views.AdListView.as_view(), name='ad_list'),
+    path('<int:pk>/upload_image/', views.AdUploadImageView.as_view(), name='ad_upload_image'),
 ]
