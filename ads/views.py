@@ -7,32 +7,17 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from django.conf import settings
+from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Category, Ad
+from ads.serializers import AdSerializer, AdDetailSerializer, AdListSerializer
 
 
 def root(request):
     return JsonResponse({'status': 'ok'})
 
 
-def serialize(model, values):
-    if isinstance(values, model):
-        values = [values]
-
-    result = []
-
-    for value in values:
-        data = {}
-        for field in model._meta.get_fields():
-            if field.is_relation:
-                continue
-            if field.name == 'image':
-                data[field.name] = getattr(value.image, 'url', None)
-            else:
-                data[field.name] = getattr(value, field.name)
-        result.append(data)
-
-        return result
+def serialize(model, values): ...
 
 
 class CategoryDetailView(generic.DetailView):
@@ -105,31 +90,6 @@ class CategoryDeleteView(generic.DeleteView):
         return JsonResponse({'status': 'ok'}, status=200)
 
 
-class AdListView(generic.ListView):
-    model = Ad
-    queryset = Ad.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
-
-        self.object_list = self.object_list.select_related('author_id').order_by('-price')
-        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
-        page_number = request.GET.get('page', 1)
-        page_obj = paginator.get_page(page_number)
-        ads = serialize(Ad, page_obj)
-
-        response = {
-            'items': ads,
-            'num_pages': page_obj.paginator.num_pages,
-            'total': page_obj.paginator.count
-        }
-
-        return JsonResponse(
-            response,
-            safe=False,
-        )
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class AdUploadImageView(generic.UpdateView):
     model = Ad
@@ -144,3 +104,31 @@ class AdUploadImageView(generic.UpdateView):
         result = serialize(self.model, self.object)
 
         return JsonResponse(result, safe=False)
+
+
+class AdViewSet(ModelViewSet):
+    default_serializer = AdSerializer
+    queryset = Ad.objects.order_by('-price')
+    serializers = {'retrieve': AdDetailSerializer, 'list': AdListSerializer}
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.default_serializer)
+
+    def list(self, request, *args, **kwargs):
+        categories = request.GET.getlist('cat')
+        if categories:
+            self.queryset = self.queryset.filter(category_id__in=categories)
+        text = request.GET.get('text')
+        if text:
+            self.queryset = self.queryset.filter(name__icontains=text)
+        location = request.GET.get('location')
+        if location:
+            self.queryset = self.queryset.filter(author_id__location__name__icontains=location)
+        price_from = request.GET.get('price_from')
+        if price_from:
+            self.queryset = self.queryset.filter(price__gte=text)
+        price_to = request.GET.get('price_to')
+        if price_to:
+            self.queryset = self.queryset.filter(price__lte=text)
+
+        return super().list(request, *args, **kwargs)
