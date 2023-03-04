@@ -14,3 +14,16 @@ class Ad(models.Model):
     is_published = models.BooleanField()
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='ads/', null=True, blank=True)
+
+
+class Selection(models.Model):
+    name = models.CharField(max_length=250)
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    items = models.ManyToManyField(Ad)
+
+    class Meta:
+        verbose_name = 'Подборка'
+        verbose_name_plural = 'Подборки'
+
+    def __str__(self):
+        return self.name
