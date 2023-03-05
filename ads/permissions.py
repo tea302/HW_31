@@ -21,6 +21,4 @@ class IsStaff(BasePermission):
     message = 'Редактировать\Удалять может только создатель объявления или модератор!'
 
     def has_object_permission(self, request, view, obj):
-        if request.user.role in [User.Roles.MODERATOR, User.Roles.ADMIN]:
-            return True
-        return False
+        return request.user.role in [User.Roles.MODERATOR, User.Roles.ADMIN]

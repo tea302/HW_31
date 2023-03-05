@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
@@ -19,10 +20,8 @@ class UserCreateSerializer(ModelSerializer):
         return super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
+        validated_data['password'] = make_password(validated_data['password'])
         new_user = User.objects.create(**validated_data)
-        new_user.set_password(password)
-        new_user.save()
         for loc in self._location:
             location, _ = Location.objects.get_or_create(name=loc)
             new_user.location.add(location)
