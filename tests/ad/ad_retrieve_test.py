@@ -11,6 +11,6 @@ def test_ad_detail(client, access_token):
     response = client.get(f'/ad/{ad.pk}/')
     assert response.status_code == 401
 
-    response = client.get(f'/ad/{ad.pk}/', HTTP_AUTHORIZATION=f'Bearer ' + access_token)
+    response = client.get(f'/ad/{ad.pk}/', HTTP_AUTHORIZATION='Bearer ' + access_token)
     assert response.status_code == status.HTTP_200_OK
     assert response.data == AdDetailSerializer(ad).data

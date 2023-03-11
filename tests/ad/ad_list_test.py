@@ -1,6 +1,6 @@
 import pytest
 
-from ads.serializers import AdDetailSerializer, AdListSerializer
+from ads.serializers import AdListSerializer
 from tests.factories import AdFactory
 
 
@@ -11,8 +11,8 @@ def test_ad_list(client):
     response = client.get(f'/ad/')
     assert response.status_code == 200
     assert response.data == {
-        'count': 21,
+        'count': 4,
         'next': None,
         'previous': None,
-        'results': AdListSerializer(ad_list, many=True).data
+        'results': AdListSerializer(ad_list, many=True).data,
     }

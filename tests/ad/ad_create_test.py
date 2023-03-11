@@ -5,10 +5,11 @@ from rest_framework import status
 @pytest.mark.django_db
 def test_ad_create(client, user, category, access_token):
     data = {
-        'author': user.pk,
-        'category': category.pk,
+        'author_id': user.pk,
+        'category_id': category.pk,
         'name': 'Стол из дуба',
-        'price': 200
+        'price': 200,
+        'address': 'draft',
     }
     expected_data = {
         'id': 1,
@@ -17,8 +18,9 @@ def test_ad_create(client, user, category, access_token):
         'price': 200,
         'description': None,
         'image': None,
-        'author': user.pk,
-        'category': category.pk,
+        'author_id': user.pk,
+        'category_id': category.pk,
+        'address': 'draft',
     }
     response = client.post('/ad/', data=data, HTTP_AUTHORIZATION='Bearer ' + access_token)
 

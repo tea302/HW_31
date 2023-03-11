@@ -16,8 +16,8 @@ class AdSerializer(ModelSerializer):
 
 
 class AdDetailSerializer(ModelSerializer):
-    author = SlugRelatedField(slug_field='username', queryset=User.objects.all())
-    category = SlugRelatedField(slug_field='name', queryset=Category.objects.all())
+    author_id = SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    category_id = SlugRelatedField(slug_field='name', queryset=Category.objects.all())
 
     class Meta:
         model = Ad
@@ -25,12 +25,12 @@ class AdDetailSerializer(ModelSerializer):
 
 
 class AdListSerializer(ModelSerializer):
-    author = SlugRelatedField(slug_field='username', queryset=User.objects.all())
-    category = SlugRelatedField(slug_field='name', queryset=Category.objects.all())
+    author_id = SlugRelatedField(slug_field='username', queryset=User.objects.all())
+    category_id = SlugRelatedField(slug_field='name', queryset=Category.objects.all())
     address = SerializerMethodField()
 
     def get_address(self, ad):
-        return ad.author.location.name
+        return ad.author_id.username
 
     class Meta:
         model = Ad
@@ -53,7 +53,7 @@ class SelectionCreateSerializer(ModelSerializer):
 
     class Meta:
         model = Selection
-        fields = ['name', 'items']
+        fields = ['name', 'items', 'owner', 'id']
 
 
 class CategorySerializer(ModelSerializer):

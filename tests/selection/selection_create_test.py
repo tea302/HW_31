@@ -15,8 +15,8 @@ def test_selection_create(client, user_access_token):
     }
 
     expected_data = {
-        'id': 7,
-        'owner': 'user.username',
+        'id': 1,
+        'owner': 'test_username',
         'name': 'Имя подборки',
         'items': [ad.pk for ad in ad_list]
     }
