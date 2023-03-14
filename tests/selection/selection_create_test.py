@@ -24,3 +24,4 @@ def test_selection_create(client, user_access_token):
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.data == expected_data
+

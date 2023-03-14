@@ -53,3 +53,4 @@ convert_file('location.csv', LOCATIONS_JSON_FILE_NAME, LOCATION_MODEL)
 convert_file('user.csv', USERS_JSON_FILE_NAME, USER_MODEL)
 convert_file('category.csv', CATEGORIES_JSON_FILE_NAME, CATEGORIES_MODEL)
 convert_file('ad.csv', ADS_JSON_FILE_NAME, ADS_MODEL)
+

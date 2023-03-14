@@ -26,3 +26,4 @@ def test_ad_create(client, user, category, access_token):
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.data == expected_data
+

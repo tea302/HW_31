@@ -28,3 +28,4 @@ class User(AbstractUser):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
     birth_date = models.DateField(validators=[check_birth_date], null=True, blank=True)
     email = models.EmailField(unique=True, null=True, validators=[check_email])
+
